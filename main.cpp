@@ -13,10 +13,10 @@ struct node
 };
 
 
-string cr, cl, cp; //ramki do wyœwietlania drzewa
+string cr, cl, cp; //frames used in show_tree() function
 node *root;
 
-string intToStr(int n) //zamiana inta na string
+string intToStr(int n) //int to string conversion
 {
 	string tmp, ret;
 	if (n < 0) {
@@ -33,7 +33,7 @@ string intToStr(int n) //zamiana inta na string
 }
 
 
-node* find_value(int n, node *start) //funkcja zwraca wartoœæ NULL, jeœli nie znaleziono wêz³a
+node* find_value(int n, node *start) //if no node is found, NULL is returned
 {
 	if ((!start) || (start->data == n))
 		return start;
@@ -45,21 +45,21 @@ node* find_value(int n, node *start) //funkcja zwraca wartoœæ NULL, jeœli nie zn
 }
 
 
-node* min_val(node *v) //znajdowanie najmniejszej wartoœci drzewa
+node* min_val(node *v) //finding a node containing the lowest value in the tree
 {
 	if (v->left == NULL) return v;
 	else min_val(v->left);
 }
 
 
-node* max_val(node *v) //znajdowanie najwiêkszej wartoœci drzewa
+node* max_val(node *v) //finding a node containing the lowest value in the tree
 {
 	if (v->right == NULL) return v;
 	else max_val(v->right);
 }
 
 
-node* next_node(node *v) //znajdowanie nastêpnika
+node* next_node(node *v) //finding a substitute node for the node chosen to be deleted
 {
 	if (v->right) return min_val(v->right);
 	else if (v->left) return max_val(v->left);
@@ -86,13 +86,13 @@ void add_node(int n, node*&start, node* parent)
 
 void delete_node(node *&v) 
 {
-	if (!v->left && !v->right) //przypadek, gdy usuwany wêze³ nie ma dzieci
+	if (!v->left && !v->right) //the case in which node chosen to be disposed has no branches
 	{
-		if (v->parent) //jeœli istnieje ojciec
+		if (v->parent) //jeÅ“li istnieje ojciec
 		{
-			if (v->parent->right) //usuwanie w rodzicu wskaŸnika na jego prawe dziecko
+			if (v->parent->right) //usuwanie w rodzicu wskaÅ¸nika na jego prawe dziecko
 				if (v->parent->right->data == v->data) v->parent->right = NULL;
-			if (v->parent->left) //usuwanie w rodzicu wskaŸnika na jego lewe dziecko
+			if (v->parent->left) //usuwanie w rodzicu wskaÅ¸nika na jego lewe dziecko
 				if (v->parent->left->data == v->data) v->parent->left = NULL;
 			delete(v);
 		}
@@ -100,31 +100,31 @@ void delete_node(node *&v)
 		return;
 	}
 
-	else if (!v->left && v->right)  //jeœli tylko prawy syn istnieje
+	else if (!v->left && v->right)  //the case in which node chosen to be disposed has has only the right branch
 	{
-		if (v->parent) //sprawdzamy, czy v nie jest korzeniem
+		if (v->parent) //checking wheter v node isn't a root
 		{
-			if (v->parent->right) //sprawdzamy, czy v jest prawym wêz³em
+			if (v->parent->right) //checking wheter the v node is the right branch
 				if (v->parent->right->data == v->data)
 				{
 					v->right->parent = v->parent;
 					v->parent->right = v->right;
 				}
-			if (v->parent->left) //sprawdzamy, czy v jest lewym wêz³em
+			if (v->parent->left) //checking whether the v node is the left branch
 				if (v->parent->left->data == v->data)
 				{
 					v->right->parent = v->parent;
 					v->parent->left = v->right;
 				}
 		}
-		else //gdy v jest korzeniem
+		else //the case, in which the v node is root
 		{
 			root = v->right;
 			root->parent = NULL;
 		}
 		delete(v);
 	}
-	else if (v->left && !v->right) //jeœli tylko lewy syn istnieje
+	else if (v->left && !v->right) //while the v node has only left branch
 	{
 		if (v->parent)
 		{
@@ -148,9 +148,9 @@ void delete_node(node *&v)
 		}
 		delete(v);
 	}
-	else //jeœli istniej¹ obaj synowie
+	else //the case when both child nodes exist
 	{
-		node *next = next_node(v); //szukanie nastêpnika
+		node *next = next_node(v); //finding the replacement node
 		v->data = next->data;
 		delete_node(next);
 	}
@@ -161,9 +161,9 @@ void show_tree(string sp, string sn, node * v)
 {
 	string s;
 	cr = cl = cp = "  ";
-	cr[0] = 218; cr[1] = 196; //symbol prawego odga³êzienia
-	cl[0] = 192; cl[1] = 196; //symbol lewego odga³êzienia
-	cp[0] = 179; //symbol przed³u¿enia poziomu, "|"
+	cr[0] = 218; cr[1] = 196; //an ASCII code for the right branch
+	cl[0] = 192; cl[1] = 196; //an ASCII code for the left branch
+	cp[0] = 179; //an ASCII code for the branch extension "|"
 
 	if (v)
 	{
@@ -186,9 +186,9 @@ void delete_tree(node *v)
 
 	if (v)
 	{
-		delete_tree(v->left);   // usuwamy lewe poddrzewo
-		delete_tree(v->right);  // usuwamy prawe poddrzewo
-		delete v;              // usuwamy sam wêze³
+		delete_tree(v->left);   //deleting branches below v on the left
+		delete_tree(v->right);  //deleting branches below v on the right
+		delete v;               //deleting the v node itself
 	}
 }
 
@@ -197,7 +197,7 @@ void delete_tree(node *v)
 int main()
 {
 	root = NULL;
-	string info=""; //informacja wyswietlana nad drzewem
+	string info=""; //the info line presented above the tree
 	int n, input;
 	
 
@@ -207,21 +207,21 @@ int main()
 		show_tree("", "", root);
 
 		cout << endl << "Menu:" << endl;
-		cout << "1) dodawanie wezla" << endl;
-		cout << "2) usuwanie wezla" << endl;
-		cout << "3) najwieksza wartosc drzewa" << endl;
-		cout << "4) najmniejsza wartosc drzewa" << endl;
-		cout << "0) wyjscie z programu" << endl;
+		cout << "1) add node" << endl;
+		cout << "2) delete node" << endl;
+		cout << "3) the highest value of the tree" << endl;
+		cout << "4) the lowest value of the tree" << endl;
+		cout << "0) exit" << endl;
 
 		cin >> input;
 		switch (input)
 		{
 		case 1:
-			cout << "Podaj wartosc do dodania: ";
+			cout << "A value to add: ";
 			cin >> n;
 			if (find_value(n, root))
 			{
-				info = "Wezel o podanej wartosci juz istnieje";
+				info = "A node containing this value already exists";
 				break;
 			}
 			add_node(n, root, root);
@@ -229,13 +229,13 @@ int main()
 			break;
 
 		case 2:
-			cout << "Podaj wartosc usuwanego wezla: ";
+			cout << "A value of a node to delete: ";
 			cin >> n;
 			{
 				node *temp = find_value(n, root);
 				if (!temp)
 				{
-					info = "Wezel o podanej wartosci nie istnieje";
+					info = "A node containing this value doesn't exists";
 					break;
 				}
 				if (temp) delete_node(temp);
@@ -244,18 +244,18 @@ int main()
 			break;
 
 		case 3:
-			info = "Najwieksza wartosc drzewa: " + intToStr(max_val(root)->data);
+			info = "The highest value of the tree: " + intToStr(max_val(root)->data);
 			break;
 		case 4:
-			info = "Najmniejsza wartosc drzewa: " + intToStr(min_val(root)->data);
+			info = "The lowest value of the tree: " + intToStr(min_val(root)->data);
 			break;
 		default:
-			info = "Wybrano niewlasciwa opcje";
+			info = "You have chosen improper option";
 		}
 
 		system("cls");
 	} while (input);
 
-	delete_tree(root);    // usuwamy drzewo z pamiêci
+	delete_tree(root);    //disposing the tree from system memory
 	return 0;
 }
