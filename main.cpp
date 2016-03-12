@@ -13,9 +13,6 @@ struct node
 };
 
 
-string cr, cl, cp; //frames used in show_tree() function
-node *root;
-
 string intToStr(int n) //int to string conversion
 {
 	string tmp, ret;
@@ -84,7 +81,7 @@ void add_node(int n, node*&start, node* parent)
 }
 
 
-void delete_node(node *&v) 
+void delete_node(node *&v, node *root)
 {
 	if (!v->left && !v->right) //the case in which node chosen to be disposed has no branches
 	{
@@ -152,7 +149,7 @@ void delete_node(node *&v)
 	{
 		node *next = next_node(v); //finding the replacement node
 		v->data = next->data;
-		delete_node(next);
+		delete_node(next, root);
 	}
 }
 
@@ -160,6 +157,7 @@ void delete_node(node *&v)
 void show_tree(string sp, string sn, node * v)
 {
 	string s;
+	string cr, cl, cp; //frames used in show_tree() function
 	cr = cl = cp = "  ";
 	cr[0] = 218; cr[1] = 196; //an ASCII code for the right branch
 	cl[0] = 192; cl[1] = 196; //an ASCII code for the left branch
@@ -196,10 +194,11 @@ void delete_tree(node *v)
 //=============================================================================================
 int main()
 {
+	node *root;
 	root = NULL;
-	string info=""; //the info line presented above the tree
+	string info = ""; //the info line presented above the tree
 	int n, input;
-	
+
 
 	do
 	{
@@ -238,7 +237,7 @@ int main()
 					info = "A node containing this value doesn't exists";
 					break;
 				}
-				if (temp) delete_node(temp);
+				if (temp) delete_node(temp, root);
 				info = "";
 			}
 			break;
